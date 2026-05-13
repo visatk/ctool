@@ -2,23 +2,70 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
     
     <!-- Primary Meta Tags -->
-    <title>Secure Auth Token, API Key, Hash & JWT Generator</title>
-    <meta name="title" content="Secure Auth Suite | API Keys, JWTs, Hashes & Base64">
-    <meta name="description" content="The ultimate developer suite. Generate cryptographically secure API keys, JWT secrets, SHA-256 hashes, and Base64 strings. 100% client-side privacy.">
+    <title>Secure Auth Suite | API Keys, JWTs, Epoch & Dev Tools</title>
+    <meta name="title" content="Secure Auth Suite | API Keys, JWTs, Epoch & Dev Tools">
+    <meta name="description" content="The ultimate offline-first developer suite. Generate API keys, decode JWTs, calculate hashes, convert Unix timestamps, and format JSON. 100% client-side privacy.">
+    <meta name="keywords" content="Unix timestamp converter, API key generator, JWT decoder offline, SHA-256 calculator, Base64 encoder, HMAC generator, JSON formatter, UUID v4 generator, secure auth tools, client-side encryption">
+    <meta name="author" content="Dr. King">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Secure Auth Suite | API Keys, JWTs, Hashes & Base64">
-    <meta property="og:description" content="Generate cryptographically strong API keys, UUIDs, JWT secrets, and Hashes instantly. 100% client-side.">
+    <meta property="og:title" content="Secure Auth Suite & Dev Tools by Dr. King">
+    <meta property="og:description" content="Generate API keys, decode JWTs, convert Unix epochs, format JSON and encode Base64 safely. Zero tracking, 100% browser-side execution. Join @drkingbd.">
+    <meta property="og:image" content="https://authgen.pages.dev/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Secure Auth Suite & Dev Tools by Dr. King">
+    <meta property="twitter:description" content="Generate cryptographically strong API keys, UUIDs, JWT secrets, convert timestamps and more. 100% client-side.">
+    <meta property="twitter:image" content="https://authgen.pages.dev/og-image.png">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- High-Level SEO: JSON-LD Structured Data with Telegram Entity Linking -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Secure Auth Suite",
+      "url": "https://authgen.pages.dev/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript and Web Crypto API support.",
+      "description": "An offline-first suite of developer tools including secure API key generation, JWT payload decoding, SHA hashing, Unix epoch conversion, and text formatting. Runs entirely locally in the browser.",
+      "author": {
+        "@type": "Person",
+        "name": "Dr. King",
+        "url": "https://t.me/drkingbd",
+        "sameAs": [
+          "https://t.me/drkingbd"
+        ]
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Cryptographically Secure String Generation",
+        "Offline JWT Payload Decoder",
+        "SHA-1, SHA-256, SHA-512 Hash Calculator",
+        "HMAC Signature Generator",
+        "JSON Formatter & Validator",
+        "Unix Epoch Timestamp Converter",
+        "String Case Transformer (Camel, Snake, Kebab)",
+        "Base64 & URL Encoder/Decoder"
+      ]
+    }
+    </script>
   </head>
   <body class="bg-gray-950 text-gray-100 font-['Inter',sans-serif] antialiased selection:bg-emerald-500/30">
     <div id="root"></div>
