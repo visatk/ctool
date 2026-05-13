@@ -359,11 +359,23 @@ function HmacTool({ copy }: { copy: (t: string) => void }) {
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1 flex flex-col">
           <label className="text-sm font-semibold text-gray-300 mb-2">Message (Payload)</label>
-          <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="{"event":"payment_intent.succeeded"}" className="w-full min-h-[120px] bg-gray-950 border border-gray-800 rounded-xl p-4 text-gray-200 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500" spellCheck={false} />
+          <textarea 
+            value={message} 
+            onChange={(e) => setMessage(e.target.value)} 
+            placeholder='{"event":"payment_intent.succeeded"}' 
+            className="w-full min-h-[120px] bg-gray-950 border border-gray-800 rounded-xl p-4 text-gray-200 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500" 
+            spellCheck={false} 
+          />
         </div>
         <div className="flex-1 flex flex-col">
           <label className="text-sm font-semibold text-gray-300 mb-2">Secret Key</label>
-          <textarea value={secret} onChange={(e) => setSecret(e.target.value)} placeholder="whsec_..." className="w-full min-h-[120px] bg-gray-950 border border-gray-800 rounded-xl p-4 text-cyan-400 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500" spellCheck={false} />
+          <textarea 
+            value={secret} 
+            onChange={(e) => setSecret(e.target.value)} 
+            placeholder="whsec_..." 
+            className="w-full min-h-[120px] bg-gray-950 border border-gray-800 rounded-xl p-4 text-cyan-400 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500" 
+            spellCheck={false} 
+          />
         </div>
       </div>
       <div className="flex-1 flex flex-col gap-4">
