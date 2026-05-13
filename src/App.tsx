@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 // ==========================================
 // 1. TYPES & CONSTANTS
 // ==========================================
 type EncodingType = 'hex' | 'base64' | 'chars' | 'alphanumeric' | 'uuid';
-type TabId = 'generate' | 'decode' | 'hash' | 'hmac' | 'base64' | 'url' | 'json';
+type TabId = 'generate' | 'decode' | 'hash' | 'hmac' | 'epoch' | 'text' | 'base64' | 'url' | 'json';
 
 interface Preset {
   id: string;
@@ -27,6 +27,8 @@ const TAB_TITLES: Record<TabId, string> = {
   decode: 'JWT Decoder',
   hash: 'Hash Calculator',
   hmac: 'HMAC Generator',
+  epoch: 'Unix Time Converter',
+  text: 'Text Transformer',
   base64: 'Base64 Tool',
   url: 'URL Encoder',
   json: 'JSON Formatter'
@@ -85,9 +87,9 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>('generate');
   const [toast, setToast] = useState<string | null>(null);
 
-  // High Level SEO: Dynamic Title Tag Update
+  // Dynamic Title Tag Update for SEO
   useEffect(() => {
-    document.title = `${TAB_TITLES[activeTab]} | Secure Auth Suite`;
+    document.title = `${TAB_TITLES[activeTab]} | Secure Auth Suite by Dr. King`;
   }, [activeTab]);
 
   const copyToClipboard = async (text: string, message: string = 'Copied to clipboard!') => {
@@ -111,11 +113,11 @@ export default function App() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 lg:gap-12 flex-1 w-full">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 lg:gap-12 flex-1 w-full">
         
         {/* Sidebar Navigation */}
-        <aside className="lg:w-64 shrink-0 flex flex-col gap-6" aria-label="Sidebar Navigation">
-          <header className="mb-4 text-center lg:text-left">
+        <aside className="lg:w-64 shrink-0 flex flex-col gap-4" aria-label="Sidebar Navigation">
+          <header className="mb-2 text-center lg:text-left">
             <h1 className="text-3xl font-bold tracking-tight text-white flex items-center justify-center lg:justify-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20" aria-hidden="true">
                 <svg className="w-5 h-5 text-gray-950" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
@@ -125,16 +127,31 @@ export default function App() {
             <p className="text-xs text-gray-500 mt-2 font-medium">100% Client-Side. Zero Tracking.</p>
           </header>
 
-          <nav className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 hide-scrollbar" aria-label="Main Tool Menu">
+          <nav className="flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 hide-scrollbar" aria-label="Main Tool Menu">
             <NavButton id="generate" current={activeTab} set={setActiveTab} title="Secret Generator" icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />} />
             <NavButton id="decode" current={activeTab} set={setActiveTab} title="JWT Decoder" icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />} />
             <NavButton id="hash" current={activeTab} set={setActiveTab} title="Hash Calculator" icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />} />
             <NavButton id="hmac" current={activeTab} set={setActiveTab} title="HMAC Generator" icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />} />
-            <div className="h-px bg-gray-800/50 my-1 hidden lg:block"></div>
+            <div className="h-px bg-gray-800/50 my-2 hidden lg:block"></div>
+            <NavButton id="epoch" current={activeTab} set={setActiveTab} title="Unix Time Tool" icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />} />
             <NavButton id="json" current={activeTab} set={setActiveTab} title="JSON Formatter" icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />} />
+            <NavButton id="text" current={activeTab} set={setActiveTab} title="Text Transformer" icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />} />
             <NavButton id="base64" current={activeTab} set={setActiveTab} title="Base64 Tool" icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />} />
             <NavButton id="url" current={activeTab} set={setActiveTab} title="URL Encoder" icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />} />
           </nav>
+
+          {/* TELEGRAM PROMOTION BANNER */}
+          <a href="https://t.me/drkingbd" target="_blank" rel="noopener noreferrer" 
+             className="mt-6 lg:mt-auto bg-gradient-to-br from-[#2AABEE] to-[#229ED9] p-4 rounded-xl text-white flex items-center gap-4 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#2AABEE]/20 transition-all duration-300 group outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:ring-[#2AABEE]">
+            <div className="bg-white/20 p-2 rounded-full group-hover:rotate-12 transition-transform">
+              <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.94z"/></svg>
+            </div>
+            <div>
+              <div className="font-bold text-sm leading-tight text-white">Join the Community</div>
+              <div className="text-xs text-blue-100 mt-0.5 font-medium">@drkingbd on Telegram</div>
+            </div>
+          </a>
+
         </aside>
 
         {/* Main Workspace Content */}
@@ -144,6 +161,8 @@ export default function App() {
             {activeTab === 'decode' && <JwtDecoderTool copy={copyToClipboard} />}
             {activeTab === 'hash' && <HashTool copy={copyToClipboard} />}
             {activeTab === 'hmac' && <HmacTool copy={copyToClipboard} />}
+            {activeTab === 'epoch' && <EpochTool copy={copyToClipboard} />}
+            {activeTab === 'text' && <TextTool copy={copyToClipboard} />}
             {activeTab === 'base64' && <Base64Tool copy={copyToClipboard} />}
             {activeTab === 'url' && <UrlEncoderTool copy={copyToClipboard} />}
             {activeTab === 'json' && <JsonFormatterTool copy={copyToClipboard} />}
@@ -166,7 +185,7 @@ function NavButton({ id, current, set, title, icon }: { id: TabId, current: TabI
     <button
       onClick={() => set(id)}
       aria-current={active ? 'page' : undefined}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
+      className={`flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium transition-all duration-200 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
         active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900 border border-transparent'
       }`}
     >
@@ -393,6 +412,132 @@ function HmacTool({ copy }: { copy: (t: string) => void }) {
   );
 }
 
+function EpochTool({ copy }: { copy: (t: string) => void }) {
+  const [currentEpoch, setCurrentEpoch] = useState(Math.floor(Date.now() / 1000));
+  const [inputEpoch, setInputEpoch] = useState('');
+  const [parsedDate, setParsedDate] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentEpoch(Math.floor(Date.now() / 1000)), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!inputEpoch) { setParsedDate(null); return; }
+    const num = Number(inputEpoch);
+    if (isNaN(num)) { setParsedDate('Invalid number'); return; }
+    // Detect if input is likely milliseconds instead of seconds
+    const isMs = inputEpoch.length > 11;
+    const date = new Date(isMs ? num : num * 1000);
+    if (isNaN(date.getTime())) { setParsedDate('Invalid date'); return; }
+    
+    setParsedDate(`${date.toUTCString()} (UTC)\n${date.toString()}`);
+  }, [inputEpoch]);
+
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-6 h-full flex-1">
+      <div className="bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 text-center relative group">
+        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Current Unix Epoch</h3>
+        <div className="text-4xl sm:text-5xl font-bold font-mono text-emerald-400 tracking-tight">{currentEpoch}</div>
+        <button onClick={() => copy(currentEpoch.toString())} className="absolute top-4 right-4 text-xs bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity font-medium">Copy</button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
+        <div className="bg-gray-950 border border-gray-800 rounded-xl p-5 flex flex-col gap-4">
+          <label className="text-sm font-semibold text-gray-300">Timestamp to Human Date</label>
+          <input 
+            type="text" 
+            value={inputEpoch} 
+            onChange={(e) => setInputEpoch(e.target.value.trim())} 
+            placeholder="e.g. 1715423851" 
+            className="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-emerald-400 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+          <div className="flex-1 bg-gray-900/50 rounded-lg p-4 font-mono text-sm text-gray-300 whitespace-pre-wrap border border-gray-800/50">
+            {parsedDate || 'Waiting for timestamp...'}
+          </div>
+        </div>
+        <div className="bg-gray-950 border border-gray-800 rounded-xl p-5 flex flex-col gap-4">
+           <label className="text-sm font-semibold text-gray-300">Human Date to Timestamp</label>
+           <p className="text-xs text-gray-500">Convert ISO strings or human dates to epoch seconds.</p>
+           <input 
+            type="datetime-local" 
+            onChange={(e) => {
+              if (e.target.value) setInputEpoch(Math.floor(new Date(e.target.value).getTime() / 1000).toString())
+            }}
+            className="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-cyan-400 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500 [color-scheme:dark]"
+          />
+           <input 
+            type="text" 
+            placeholder="Or type date: 2026-05-13T10:00:00Z"
+            onChange={(e) => {
+              const d = new Date(e.target.value);
+              if (!isNaN(d.getTime())) setInputEpoch(Math.floor(d.getTime() / 1000).toString())
+            }}
+            className="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-gray-300 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500 mt-auto"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TextTool({ copy }: { copy: (t: string) => void }) {
+  const [text, setText] = useState('');
+  
+  const transformers = [
+    { label: 'UPPERCASE', fn: (s: string) => s.toUpperCase() },
+    { label: 'lowercase', fn: (s: string) => s.toLowerCase() },
+    { label: 'camelCase', fn: (s: string) => s.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => i === 0 ? w.toLowerCase() : w.toUpperCase()).replace(/\s+/g, '') },
+    { label: 'snake_case', fn: (s: string) => s.replace(/\W+/g, " ").split(/ |\B(?=[A-Z])/).map(w => w.toLowerCase()).join('_').replace(/^_|_$/g, '') },
+    { label: 'kebab-case', fn: (s: string) => s.replace(/\W+/g, " ").split(/ |\B(?=[A-Z])/).map(w => w.toLowerCase()).join('-').replace(/^-|-$/g, '') },
+  ];
+
+  const stats = {
+    chars: text.length,
+    words: text.trim() ? text.trim().split(/\s+/).length : 0,
+    lines: text ? text.split(/\r\n|\r|\n/).length : 0
+  };
+
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-6 h-full flex-1">
+      <div className="flex-1 flex flex-col gap-2">
+        <div className="flex justify-between items-end">
+          <label className="text-sm font-semibold text-gray-300">Input String</label>
+          <div className="flex gap-4 text-xs text-gray-500 font-mono">
+            <span>Chars: <strong className="text-emerald-400">{stats.chars}</strong></span>
+            <span>Words: <strong className="text-cyan-400">{stats.words}</strong></span>
+            <span>Lines: <strong className="text-purple-400">{stats.lines}</strong></span>
+          </div>
+        </div>
+        <textarea 
+          value={text} 
+          onChange={(e) => setText(e.target.value)} 
+          placeholder="Paste text or code variables here..." 
+          className="w-full flex-1 min-h-[200px] bg-gray-950 border border-gray-800 rounded-xl p-4 text-gray-200 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500 resize-none" 
+          spellCheck={false} 
+        />
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {transformers.map(t => (
+          <button 
+            key={t.label} 
+            onClick={() => setText(t.fn(text))}
+            disabled={!text}
+            className="bg-gray-900 border border-gray-800 hover:border-emerald-500/50 hover:bg-gray-800 text-gray-300 py-2.5 px-3 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:pointer-events-none disabled:hover:border-gray-800"
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+      <div className="flex justify-end">
+         <button onClick={() => copy(text)} disabled={!text} className="px-6 py-2.5 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-gray-950 disabled:opacity-50 disabled:pointer-events-none rounded-lg transition-colors font-medium outline-none focus:ring-2 focus:ring-emerald-500">
+           Copy Output
+         </button>
+      </div>
+    </div>
+  );
+}
+
 function Base64Tool({ copy }: { copy: (t: string) => void }) {
   const [input, setInput] = useState('');
   const [mode, setMode] = useState<'encode'|'decode'>('encode');
@@ -548,6 +693,19 @@ function EducationalContent({ activeTab }: { activeTab: TabId }) {
           <h3 className="text-xl font-bold text-white mb-4">HMAC (Hash-based Message Authentication Code)</h3>
           <p className="mb-4">HMACs provide a way to verify both the <strong>data integrity</strong> and the <strong>authenticity</strong> of a message using a shared secret key. Widely used for verifying Webhook payloads (like Stripe or GitHub events) preventing man-in-the-middle tampering.</p>
           <p>Our generator utilizes the native browser <code>crypto.subtle.sign</code> API ensuring your shared secrets never leave your device.</p>
+        </div>
+      )}
+      {activeTab === 'epoch' && (
+        <div className="animate-in fade-in duration-500">
+          <h3 className="text-xl font-bold text-white mb-4">Unix Epoch Timestamps</h3>
+          <p className="mb-4">The Unix epoch is the number of seconds that have elapsed since January 1, 1970 (midnight UTC/GMT), not counting leap seconds. It is universally used in APIs and backend systems because it resolves timezone ambiguity.</p>
+          <p>Note: JavaScript's native <code>Date.now()</code> returns <em>milliseconds</em>, while standard Unix timestamps are typically in <em>seconds</em>. This tool handles both intelligently.</p>
+        </div>
+      )}
+      {activeTab === 'text' && (
+        <div className="animate-in fade-in duration-500">
+          <h3 className="text-xl font-bold text-white mb-4">Text & Variable Transformation</h3>
+          <p>Instantly transform plain text into standard programming variable casings (<code>camelCase</code>, <code>snake_case</code>, <code>kebab-case</code>). This executes completely on the client using Regex pattern matching, ensuring any pasted proprietary code fragments remain secure on your machine.</p>
         </div>
       )}
       {activeTab === 'base64' && (
